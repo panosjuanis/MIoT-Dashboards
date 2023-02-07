@@ -5,11 +5,57 @@ import dash
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
+import numpy as np
 
 from dash import Dash, html, dcc, Output, Input
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+def getFrailityPage():
+    filepath = "../../FrailtyStudy_Datasets/Cuestionarios y Wearables/Wearable Data/raw_data/CM1/es.ugr.frailty.heartrate.csv"
+    columns = ['timestamp', 'day_month_year', 'hour_min_sec_ms', 'hr', 'phase']
+    hr = pd.read_csv(filepath, names = columns)
+    sample_size = 25
+    n_samples = hr[::sample_size].shape[0]
+    # Plot the data using plotly.express
+    fig = px.line(hr[::sample_size], x='hour_min_sec_ms', y='hr', title="Heart rate in fraility experiment by phase")
+
+    # Update x-axis labels
+    fig.update_xaxes(tickvals=np.arange(0, n_samples, step=n_samples/hr['phase'].max()),
+                    ticktext=hr['phase'].unique())
+
+    # fig.show()
+    layout = html.Div([
+        dcc.Graph(
+            id='example-figure',
+            figure=fig
+        )
+    ])
+
+    return layout
+
+
+
+
+
+def getStreamingPage():
+
+    layout = html.Div(className='row', children=[
+    html.H1("Datos en streaming de sensores"),
+    dcc.Dropdown(['TicWatch', 'Empatica', 'Fitbit'], 'TicWatch', id='sensor-dropdown'),
+    html.Div(children=[
+        dcc.Graph(id="graph1", style={'display': 'inline-block'}),
+        dcc.Graph(id="graph2", style={'display': 'inline-block'})
+    ])
+])
+
+
+
+
+
+
+    return layout
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
@@ -39,9 +85,10 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("Page 1", href="/page-1", active="exact"),
-                dbc.NavLink("Page 2", href="/page-2", active="exact"),
+                dbc.NavLink("Sensores en tiempo real", href="/", active="exact"),
+                dbc.NavLink("Experimento Fragilidad", href="/fragilidad", active="exact"),
+                dbc.NavLink("Experimento Dependencia", href="/dependencia", active="exact"),
+                dbc.NavLink("Otros experimentos", href="/otros", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -58,9 +105,9 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/":
-        return html.P("This is the content of the home page!")
+        return getStreamingPage()
     elif pathname == "/page-1":
-        return html.P("This is the content of page 1. Yay!")
+        return getFrailityPage()
     elif pathname == "/page-2":
         return html.P("Oh cool, this is page 2!")
     # If the user tries to reach a different page, return a 404 message
