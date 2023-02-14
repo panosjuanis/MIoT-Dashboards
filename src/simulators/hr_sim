@@ -1,1 +1,3 @@
+import numpy as np
+
 # TODO -> create simulator script to generate hr and other data and stream it to dashboard
