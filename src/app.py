@@ -1,5 +1,8 @@
-# Run this app with `python app_name.py` and
-# visit http://127.0.0.1:8888/ in your web browser.
+# app.py
+# Follow the steps to execute app:
+# >
+# >python app.py 
+# -visit http://127.0.0.1:8888/ in your web browser.
 
 import dash
 import dash_bootstrap_components as dbc
@@ -8,7 +11,7 @@ import pandas as pd
 import numpy as np
 
 from dash import Dash, html, dcc, Output, Input
-from pages.fraility import phase_names, split_participant_names, e4_data_to_df
+from pages import fraility
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -35,33 +38,33 @@ def get_hr_fig(experiment_letter, experiment_id):
                      ticktext=phase_names)
     return fig
 
-def getFrailityPage():
-    # HTML LAYOUT
+# def getFrailityPage():
+#     # HTML LAYOUT
 
-    # DROPDOWNS
-    layout = html.Div([
-        html.Div([
-            dbc.Row([
-                dbc.Col(dcc.Dropdown(['CM', 'E', 'Z'], 'CM', id='experiment-letter-dropdown')),
-                dbc.Col(dcc.Dropdown(experiment_id_dict['CM'], experiment_id_dict['CM'][0], id='experiment-number-dropdown'))
-            ]),
-        ],
-        style={
+#     # DROPDOWNS
+#     layout = html.Div([
+#         html.Div([
+#             dbc.Row([
+#                 dbc.Col(dcc.Dropdown(['CM', 'E', 'Z'], 'CM', id='experiment-letter-dropdown')),
+#                 dbc.Col(dcc.Dropdown(experiment_id_dict['CM'], experiment_id_dict['CM'][0], id='experiment-number-dropdown'))
+#             ]),
+#         ],
+#         style={
             
-            "width": "20%"
-        }),
+#             "width": "20%"
+#         }),
 
-        html.Div([
-            dbc.Row([
-                dbc.Col(dcc.Graph(id='heartrate-figure', figure=get_hr_fig('CM', 1))),
-                dbc.Col(dcc.Graph(id='eda-figure', figure=get_hr_fig('CM', 1)))
-            ]),
-        ])
-    ])
+#         html.Div([
+#             dbc.Row([
+#                 dbc.Col(dcc.Graph(id='heartrate-figure', figure=get_hr_fig('CM', 1))),
+#                 dbc.Col(dcc.Graph(id='eda-figure', figure=get_hr_fig('CM', 1)))
+#             ]),
+#         ])
+#     ])
 
     
 
-    return layout
+#     return layout
 
 #Dropdown callback to update the patient id dropdown
 @app.callback(

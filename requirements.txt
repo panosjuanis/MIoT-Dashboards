@@ -1,0 +1,6 @@
+# TODO -> Add python package requirements to be installed into venv
+
+# python -m venv .venv                            # create the virtual environment
+# .venv\Scripts\pip install -r requirements.txt   # install all packages
+# .venv\Scripts\pip install new_package           # install a new package
+# .venv\Scripts\pip freeze > requirements.txt     # update requirements with new packages
